@@ -7,7 +7,6 @@ Flawbert Costa e Mariana Timbó.
 # Simulador de Trens com Qt e Mutexes
 
 Este projeto implementa a simulação de cinco trens que se movem sobre trilhos compartilhados com áreas críticas protegidas por mutexes. A aplicação utiliza C++ e Qt Framework para a interface gráfica, gerenciando os movimentos dos trens e evitando colisões através de sincronização de threads.
-Descrição do Projeto
 
 Cada trem é uma entidade que se move em um trilho definido. Algumas áreas desses trilhos são compartilhadas entre dois ou mais trens, formando regiões críticas. Para evitar colisões, utilizamos mutexes (pthread_mutex_t) que garantem que apenas um trem acesse essas regiões de cada vez.
 
