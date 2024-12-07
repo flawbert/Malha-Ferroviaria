@@ -4,34 +4,79 @@ Trabalho da Segunda Unidade da Disciplina de Sistemas Operacionais (IMD0036). O 
 # Componentes:
 Flawbert Costa e Mariana Timbó.
 
-# 1. Estrutura do Código
+# Simulador de Trens com Qt e Mutexes
 
-    Classe Trem:
-        Representa um trem com atributos como ID, posição (x, y), velocidade, mutexes compartilhados e o tamanho do passo.
-        Possui métodos para manipulação de velocidade, inverter o movimento e executar o deslocamento com controle de regiões críticas.
+Este projeto implementa a simulação de cinco trens que se movem sobre trilhos compartilhados com áreas críticas protegidas por mutexes. A aplicação utiliza C++ e Qt Framework para a interface gráfica, gerenciando os movimentos dos trens e evitando colisões através de sincronização de threads.
+Descrição do Projeto
 
-    Método run():
-        Controla o loop principal do movimento do trem.
-        Emite sinais (emit updateGUI) para atualizar a interface gráfica com as posições do trem.
-        Usa mutexes para bloquear e desbloquear regiões críticas do trilho.
+Cada trem é uma entidade que se move em um trilho definido. Algumas áreas desses trilhos são compartilhadas entre dois ou mais trens, formando regiões críticas. Para evitar colisões, utilizamos mutexes (pthread_mutex_t) que garantem que apenas um trem acesse essas regiões de cada vez.
 
-# 2. Gerenciamento de Mutexes
+O comportamento dos trens é configurado individualmente com base em regras específicas para cada um (controladas por um identificador único, ID).
+# 1. Características
 
-    Travamento e Destravamento:
-        Antes de entrar em regiões críticas (seções compartilhadas), o trem trava o mutex correspondente.
-        Ao sair da região crítica, o mutex é destravado.
-        Isso previne colisões quando dois trens tentam acessar a mesma seção ao mesmo tempo.
+    Movimento Sincronizado:
+        Os trens são representados por threads que executam movimentos contínuos baseados em suas posições (coordenadas x e y).
+
+    Controle de Áreas Críticas:
+        Uso de mutexes para garantir exclusão mútua em seções compartilhadas do trilho.
+        Liberação e aquisição de mutexes são gerenciadas dinamicamente durante o movimento dos trens.
 
     Movimento Reverso:
-        Se o trem está se movendo para trás (indicado pelo passo negativo), mutexes podem ser desbloqueados imediatamente para evitar bloqueios desnecessários.
+        Os trens podem inverter a direção de movimento utilizando o método inverter_passo().
 
-# 3. Manipulação de Velocidade
+    Ajuste de Velocidade:
+        O usuário pode alterar a velocidade dos trens em tempo real através do método setVelocidade(int v).
 
-    Método setVelocidade(int v):
-        Ajusta a velocidade do trem com base no parâmetro v.
-        Um valor de v <= 0 resulta na parada do trem.
+    Atualização em Tempo Real:
+        A posição dos trens é atualizada em uma interface gráfica por meio de sinais (emit updateGUI).
 
-# 4. Movimento nos Trilhos
+# 2. Requisitos do Sistema
 
-    Cada trem possui regras específicas para se movimentar (baseadas no case do ID).
-    As direções e restrições de movimento (em x ou y) são determinadas pela posição atual.
+    Linguagem: C++ (com suporte a C++11 ou superior).
+    Framework: Qt (versão 5 ou superior).
+    Bibliotecas: pthread (para manipulação de threads e mutexes).
+
+# 3. Estrutura do Código
+## 3.1 Arquivos Principais
+
+    trem.h:
+        Declara a classe Trem com seus atributos e métodos.
+        Define a interface para manipulação da thread e sincronização.
+
+    trem.cpp:
+        Implementa os métodos da classe Trem.
+        Controla o movimento de cada trem com base no ID.
+        Gerencia mutexes para garantir segurança nas áreas críticas.
+
+    Interface Gráfica (via Qt):
+        Atualiza a posição dos trens em tempo real usando o método updateGUI.
+        Permite interação com os trens, como ajuste de velocidade.
+
+# 4. Funcionamento
+## 4.1 Movimento dos Trens
+
+Cada trem segue um trajeto definido com base no seu ID:
+
+    Movimentos em eixos x e y são coordenados por condições específicas.
+    Áreas críticas são protegidas com mutexes:
+        Travamento: Antes de entrar em uma região compartilhada.
+        Destravamento: Ao sair da região compartilhada.
+
+# 5. Controle de Velocidade
+
+A velocidade pode ser ajustada em tempo real. Um valor de velocidade igual a 0 faz o trem parar.
+Inversão de Movimento
+
+Os trens podem inverter seu sentido de movimento utilizando o método inverter_passo().
+Execução
+
+    Configuração do Ambiente:
+        Certifique-se de que o Qt Creator e as bibliotecas pthread estão instalados no sistema.
+
+    Compilação:
+        Abra o projeto no Qt Creator.
+        Compile o código utilizando um kit configurado com suporte a pthread.
+
+    Execução:
+        Execute o programa diretamente pelo Qt Creator.
+        Observe os movimentos dos trens e ajuste suas velocidades ou direções pela interface.
